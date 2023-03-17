@@ -1,120 +1,100 @@
-class Stack:
+class stack:
+    def __init__(self):
+        self.item = []
 
-    top = -1
-
-    size = 0
-
-    s = []
-
-    def __init__(self, size):
-
-        self.size = size -1
-
-    def isempty(self):
-        if self.top == -1:
-            return True
-        return False
-
-    def isfull(self):
-        if self.top == size:
-            return True
-        return False   
-
-    def push(self, data):
-
-        if self.top >= self.size:
-
-            print("Stack Overflow!")
-
-        else:
-
-            self.top += 1
-
-            self.s.append(data)
-
-        
+    def push(self,it):
+        self.item.append(it)
+    def peek(self):
+        if self.isempty() == True:
+            return 0
+        return self.item[-1]
 
     def pop(self):
+        if self.isempty() == True:
+            return 0
+        return(self.item.pop())
 
-        if self.top < 0:
+    def length(self):
+        return (len(self.item))
 
-            print("Stack Underflow!")
 
-
+    def isempty(self):
+        if self.item == []:
+            return True
         else:
-
-            data = self.s[self.top]
-
-            del self.s[self.top]
-
-            self.top -= 1
-
-            return data
-
-            
-
-    def display(self):
-
-        if self.top < 0:
-
-            print("Stack Underflow!")
-
             return False
 
+    def display(self):
+        if self.isempty()== True:
+            return
+        temps = stack()
+        while(self.isempty() != True):
+            x = self.peek()
+            print("~",x)
+            temps.push(x)
+            self.pop()
+        while(temps.isempty() != True):
+            x = temps.peek()
+            self.push(x)
+            temps.pop()
+
+
+    def isOperand(self, ch): 
+        return ch.isalpha()
+    def notGreater(self, i):
+        precedence = {'+':1, '-':1, '*':2, '/':2, '%':2, '^':3}
+        if self.peek() == '(':
+            return False
+        a = precedence[i]
+        b = precedence[self.peek()] 
+        if a  <= b:
+            return True
         else:
-
-            for i in range(self.top , -1, -1):
-
-                print(f"|_{self.s[i]}_|")
-
-    
-
-    
-def isoperator(c):
-    if c == '*'or c== '+' or c== '-' or c == '/' or c == '$' or c == '^':
-        return True
-    return False
-
-def getPrecedence(c):
-    if c=='^':
-        return 3 
-    elif c=='*' or c=='/' or c=='$':
-        return 2
-    elif c=='+' or c=='-':
-        return 1
-    else:
-	       return 0
-        
-s=Stack(50)
-
-infix = input("Enter the infix expression: ")
-postfix=""
-for c in infix:
-    if c == '(':
-        s.push(c)
-    elif c == ')':
-        flag = s.pop()
-        while flag != '(':
-            postfix += flag
-            flag = s.pop()
-    elif c.isalpha():
-        postfix += c
-    elif isoperator(c):
-        flag = s.pop()
-        while (not s.isempty()) and (getPrecedence(flag) > getPrecedence(c) ) and flag != '(':
-            postfix += flag
-            flag = s.pop()
+            return False
             
-        s.push(c)
-    else:
+
+
+    def infixToPostfix(self, exp):
+        output = ""
         
-        while not s.isempty:
-            postfix += s.pop()
+        for i in exp:
             
-print(postfix)
-    
-        
+            if self.isOperand(i) == True: # check if operand add to output
+                print(i,"~ Operand push to stack")
+                output = output + i
 
+            # If the character is an '(', push it to stack 
+            elif i  == '(':
+                self.push(i)
+                print(i," ~ Found ( push into stack")
 
- 
+            elif i == ')':  # if ')' pop till '('
+                while( self.isempty() != True and self.peek() != '('):
+                    n = self.pop() 
+                    output = output + n
+                    print(n, "~ Operator popped from stack")
+                if (self.isempty() != True and self.peek() != '('):
+                    print("_________")
+                    return -1
+                else:
+                    x = self.pop()
+                    print(x, "Popping and deleting (")
+            else: 
+                while(self.isempty() != True and self.notGreater(i)):
+                    c = self.pop()
+                    output = output + c
+                    print(c,"Operator popped after checking precedence from stack")
+                self.push(i)
+                print(i,"Operator pushed to stack")
+
+        # pop all the operator from the stack 
+        while self.isempty() != True:
+            xx = self.pop()
+            output = output + xx
+            print(xx,"~ pop at last")
+        print(output)
+        self.display()
+st = stack()
+infix=input("Enter the infix expression: ")
+st.infixToPostfix("a+(b*c)")
 
