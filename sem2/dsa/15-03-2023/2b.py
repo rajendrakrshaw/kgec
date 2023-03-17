@@ -10,7 +10,15 @@ class Stack:
 
         self.size = size -1
 
-        
+    def isempty(self):
+        if self.top == -1:
+            return True
+        return False
+
+    def isfull(self):
+        if self.top == size:
+            return True
+        return False   
 
     def push(self, data):
 
@@ -32,7 +40,6 @@ class Stack:
 
             print("Stack Underflow!")
 
-            return False
 
         else:
 
@@ -63,57 +70,51 @@ class Stack:
     
 
     
+def isoperator(c):
+    if c == '*'or c== '+' or c== '-' or c == '/' or c == '$' or c == '^':
+        return True
+    return False
 
+def getPrecedence(c):
+    if c=='^':
+        return 3 
+    elif c=='*' or c=='/' or c=='$':
+        return 2
+    elif c=='+' or c=='-':
+        return 1
+    else:
+	       return 0
+        
+s=Stack(50)
+
+infix = input("Enter the infix expression: ")
+postfix=""
+for c in infix:
+    if c == '(':
+        s.push(c)
+    elif c == ')':
+        flag = s.pop()
+        while flag != '(':
+            postfix += flag
+            flag = s.pop()
+    elif c.isalpha():
+        postfix += c
+    elif isoperator(c):
+        flag = s.pop()
+        while (not s.isempty()) and (getPrecedence(flag) > getPrecedence(c) ) and flag != '(':
+            postfix += flag
+            flag = s.pop()
             
-
-n = int(input("Enter the size of stack: "))
-
- 
-
-s = Stack(n)
-
- 
-
-flag = True
-
-print("Menu")
-
-print("1.Push")
-
-print("2.Pop")
-
-print("3.Display")
-
-print("4.Exit")
-
- 
-
-while flag:
-
-    opt = int(input("Enter your option: "))
-
-    if opt == 1:
-
-        data = int(input("Enter the element: "))
-
-        s.push(data)
-
-    elif opt == 2:
-
-        data = s.pop()
-
-        if data != False:
-
-            print(f"Popped element is {data}")
-
+        s.push(c)
+    else:
+        
+        while not s.isempty:
+            postfix += s.pop()
+            
+print(postfix)
     
-
-    elif opt == 3:
-
-        s.display()
-
         
 
-    elif opt == 4:
 
-        flag = False
+ 
+
